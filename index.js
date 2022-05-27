@@ -41,8 +41,36 @@ async function run() {
             const result = await clientsOrderDb.findOne(query)
             res.json(result);
 
-            console.log(query);
+            //console.log(query);
         })
+        // Query API
+
+        app.get('/single-order', async (req, res) => {
+            const email = req.query.email;
+            const query = { customerEmail: email };
+            const search = clientsOrderDb.find(query);
+            const result = await search.toArray()
+            res.json(result)
+            //console.log(search);
+
+        })
+
+        // update a single item
+        app.put('/update/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedInfo = req.body;
+            const filter = { _id: ObjectId(id) };
+            // this option instructs the method to create a document if no documents match the filter
+            const options = { upsert: true };
+            // create a document that sets the plot of the movie
+            const updateDoc = {
+                $set: { deliveryStatus: updatedInfo.deliveryStatus }
+            };
+            const result = await clientsOrderDb.updateOne(filter, updateDoc, options);
+            res.json(result)
+            console.log(result);
+        })
+
     } finally {
         //await client.close();
     }
