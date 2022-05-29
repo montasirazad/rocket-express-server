@@ -43,6 +43,8 @@ async function run() {
 
             //console.log(query);
         })
+        
+
         // Query API
 
         app.get('/single-order', async (req, res) => {
@@ -53,7 +55,8 @@ async function run() {
             res.json(result)
             //console.log(search);
 
-        })
+        }) 
+        
 
         // update a single item
         app.put('/update/:id', async (req, res) => {
