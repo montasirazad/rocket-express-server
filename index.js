@@ -16,6 +16,7 @@ async function run() {
         await client.connect();
         const database = client.db("rocket-express-orders");
         const clientsOrderDb = database.collection("client-order");
+        const reviewDb = database.collection("user-review");
         // // create a document to insert
         console.log('db connected');
 
@@ -43,7 +44,7 @@ async function run() {
 
             //console.log(query);
         })
-        
+
 
         // Query API
 
@@ -55,8 +56,8 @@ async function run() {
             res.json(result)
             //console.log(search);
 
-        }) 
-        
+        })
+
 
         // update a single item
         app.put('/update/:id', async (req, res) => {
@@ -71,6 +72,13 @@ async function run() {
             };
             const result = await clientsOrderDb.updateOne(filter, updateDoc, options);
             res.json(result)
+            console.log(result);
+        })
+
+        app.post('/user/review', async (req, res) => {
+            const review = req.body;
+            const result = await reviewDb.insertOne(review);
+            res.send(result)
             console.log(result);
         })
 
