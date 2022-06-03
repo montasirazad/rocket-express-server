@@ -74,7 +74,7 @@ async function run() {
             res.json(result)
             console.log(result);
         })
-
+        // POST A REVIEW
         app.post('/user/review', async (req, res) => {
             const review = req.body;
             const result = await reviewDb.insertOne(review);
@@ -82,6 +82,15 @@ async function run() {
             console.log(result);
         })
 
+
+        // GET all Review
+
+        app.get('/user/review', async (req, res) => {
+            const allReview = reviewDb.find({});
+            const result = await allReview.toArray();
+            res.send(result)
+            console.log(result);
+        })
     } finally {
         //await client.close();
     }
