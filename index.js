@@ -16,6 +16,7 @@ async function run() {
         await client.connect();
         const database = client.db("rocket-express-orders");
         const clientsOrderDb = database.collection("client-order");
+        const userInfoDb = database.collection("users");
         const reviewDb = database.collection("user-review");
         // // create a document to insert
         console.log('db connected');
@@ -72,14 +73,14 @@ async function run() {
             };
             const result = await clientsOrderDb.updateOne(filter, updateDoc, options);
             res.json(result)
-            console.log(result);
+            //console.log(result);
         })
         // POST A REVIEW
         app.post('/user/review', async (req, res) => {
             const review = req.body;
             const result = await reviewDb.insertOne(review);
             res.send(result)
-            console.log(result);
+            //console.log(result);
         })
 
 
@@ -89,8 +90,49 @@ async function run() {
             const allReview = reviewDb.find({});
             const result = await allReview.toArray();
             res.send(result)
-            console.log(result);
+            //console.log(result);
         })
+
+
+
+        //SAVE USER INFO API
+
+        app.put('/users', async (req, res) => {
+            const user = req.body;
+            const filter = { email: user.email }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user
+            }
+            const result = await userInfoDb.updateOne(filter, updateDoc, options);
+            console.log(result);
+            res.json(result)
+        })
+
+        app.put('/users-admin', async (req, res) => {
+            const user = req.body;
+            const filter = { email: user.email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: { role: 'admin' }
+            }
+            const result = await userInfoDb.updateOne(filter, updateDoc, options);
+            console.log(result);
+            res.json(result)
+        });
+
+        app.get('/users/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const user = await userInfoDb.findOne(query);
+            let isAdmin = false;
+            if (user?.role === 'admin') {
+                isAdmin = true;
+            }
+
+            res.json({ admin: isAdmin });
+        })
+
     } finally {
         //await client.close();
     }
