@@ -18,7 +18,6 @@ async function run() {
         const clientsOrderDb = database.collection("client-order");
         const userInfoDb = database.collection("users");
         const reviewDb = database.collection("user-review");
-        // // create a document to insert
         console.log('db connected');
 
         app.post('/', async (req, res) => {
@@ -43,7 +42,7 @@ async function run() {
             const result = await clientsOrderDb.findOne(query)
             res.json(result);
 
-            //console.log(query);
+
         })
 
 
@@ -55,7 +54,7 @@ async function run() {
             const search = clientsOrderDb.find(query);
             const result = await search.toArray()
             res.json(result)
-            //console.log(search);
+
 
         })
 
@@ -65,22 +64,21 @@ async function run() {
             const id = req.params.id;
             const updatedInfo = req.body;
             const filter = { _id: ObjectId(id) };
-            // this option instructs the method to create a document if no documents match the filter
             const options = { upsert: true };
-            // create a document that sets the plot of the movie
+
             const updateDoc = {
                 $set: { deliveryStatus: updatedInfo.deliveryStatus }
             };
             const result = await clientsOrderDb.updateOne(filter, updateDoc, options);
             res.json(result)
-            //console.log(result);
+
         })
         // POST A REVIEW
         app.post('/user/review', async (req, res) => {
             const review = req.body;
             const result = await reviewDb.insertOne(review);
             res.send(result)
-            //console.log(result);
+
         })
 
 
@@ -90,7 +88,7 @@ async function run() {
             const allReview = reviewDb.find({});
             const result = await allReview.toArray();
             res.send(result)
-            //console.log(result);
+
         })
 
 
@@ -105,7 +103,6 @@ async function run() {
                 $set: user
             }
             const result = await userInfoDb.updateOne(filter, updateDoc, options);
-            console.log(result);
             res.json(result)
         })
 
@@ -117,7 +114,6 @@ async function run() {
                 $set: { role: 'admin' }
             }
             const result = await userInfoDb.updateOne(filter, updateDoc, options);
-            console.log(result);
             res.json(result)
         });
 
